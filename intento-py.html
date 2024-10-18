@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deteccion de Glucosa</title>
+</head>
+
+<body>
+  <input type="file" id="fileInput" accept="image/*">
+  <canvas id="outputCanvas" width="400" height="300"></canvas>
+  <div id="colorIntensity"></div>
+
+  <script>
+    function onOpenCvReady() {
+      console.log('OpenCV.js loaded');
+      document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (event) {
+        const img = new Image();
+        img.onload = function () {
+          processImage(this);
+        };
+        img.src = event.target.result;
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    function processImage(image) {
+      const canvas = document.getElementById('outputCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = image.width;
+      canvas.height = image.height;
+      ctx.drawImage(image, 0, 0);
+
+      // Convertir la imagen a un objeto Mat de OpenCV.js
+      const src = cv.imread(canvas);
+
+      // Convertir la imagen a HSV
+      const hsv = new cv.Mat();
+      cv.cvtColor(src, hsv, cv.COLOR_RGBA2RGB);
+      cv.cvtColor(hsv, hsv, cv.COLOR_RGB2HSV);
+
+      // Definir el rango de color azul en HSV
+      const lowerBlue = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [90, 50, 50, 0]);//Hue(matriz, cant de componentes),Saturacion,Valor, transparencia
+      const upperBlue = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [130, 255, 255, 255]);//totalmente opaco 255 en traparencia
+      // Rango para colores verdes
+      const lowerGreen = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [35, 50, 50, 0]);
+      const upperGreen = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [85, 255, 255, 255]);
+      // Crear máscaras para verdes y azules
+      let maskGreen = new cv.Mat();
+      let maskBlue = new cv.Mat();
+      cv.inRange(hsv, lowerGreen, upperGreen, maskGreen);
+      cv.inRange(hsv, lowerBlue, upperBlue, maskBlue);
+
+      // Combinar las máscaras para obtener una única máscara que incluya ambos colores
+      let mask = new cv.Mat();
+      cv.bitwise_or(maskGreen, maskBlue, mask);
+      // Crear una máscara para aislar las áreas azules
+
+      // Aplicar umbralización
+      const dst = new cv.Mat();
+      cv.threshold(mask, dst, 100, 255, cv.THRESH_BINARY);
+
+      // Calcular la intensidad del color
+      const intensity = cv.countNonZero(dst);
+      document.getElementById("colorIntensity").textContent = "Intensidad del color:" + intensity;
+
+      // Mostrar el resultado en el canvas
+
+      cv.imshow(canvas, dst);
+
+      // Liberar memoria
+      src.delete();
+      hsv.delete();
+      lowerBlue.delete();
+      upperBlue.delete();
+      mask.delete();
+      dst.delete();
+    }
+  </script>
+  <script async src="https://docs.opencv.org/4.5.5/opencv.js" onload="onOpenCvReady()"></script>
+  <style>
+    #outputCanvas {
+      position: absolute;
+      z-index: -1;
+      width: 400px;
+      /*Este numero puede ser ajustado segun sea necesario*/
+    }
+  </style>
+</body>
+
+</html>
