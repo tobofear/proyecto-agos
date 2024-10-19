@@ -1,0 +1,113 @@
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+/* Estilo general del contenedor */
+/* styles.css */
+body {
+  background-color: #E0F7FA;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  background: linear-gradient(180deg, #E0F7FA 0%, #ffffff 100%);
+  border-radius: 20px;
+  padding: 10vw;
+  text-align: center;
+  width: 80vw;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+}
+
+.titulo {
+  color: #3AB0A6;
+  font-size: 26px;
+  margin: 0;
+  font-weight: bold;
+  text-align: center;
+  padding: 20px;
+}
+
+h2 {
+  color: #90A4AE;
+  font-size: 18px;
+  margin: 10px 0 30px;
+  font-weight: normal;
+}
+
+.content {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+input[type="file"] {
+  display: block;
+  margin: 0 auto;
+  margin-top: 20px;
+}
+
+input[type="file"]::file-selector-button {
+  background-color: #3AB0A6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-color: #2A8C85;
+}
+
+.file-select input[type="file"] {
+  display: block;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.file-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #3AB0A6;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.btn,
+.btn:hover {
+  display: inline-block;
+  background-color: #3AB0A6;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.container.expanded {
+  height: auto;
+  /* Agranda automáticamente cuando aparece el círculo */
+}
+
+.intensity-container {
+  margin-top: 20px;
+}
+
+.button-container {
+  margin-top: 20px;
+}
+
+#statusText {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.d-none {
+  display: none;
+}
