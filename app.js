@@ -34,13 +34,11 @@ function processImage(image) {
   cv.cvtColor(hsv, hsv, cv.COLOR_RGB2HSV);
 
   // Definir el rango de color azul en HSV
-  const lowerBlue = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [90, 50, 50, 0]);
-  const upperBlue = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [130, 255, 255, 255]);
-
+  const lowerBlue = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [90, 50, 50, 0]);//Hue(matriz, cant de componentes),Saturacion,Valor, transparencia
+  const upperBlue = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [130, 255, 255, 255]);//totalmente opaco 255 en traparencia
   // Rango para colores verdes
   const lowerGreen = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [35, 50, 50, 0]);
   const upperGreen = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [85, 255, 255, 255]);
-
   // Crear máscaras para verdes y azules
   let maskGreen = new cv.Mat();
   let maskBlue = new cv.Mat();
@@ -77,7 +75,7 @@ function processImage(image) {
 }
 
 function updateIntensityCircle(intensity) {
-  const maxIntensity = 100000;
+  const maxIntensity = 4258;
   const percentage = Math.min(intensity / maxIntensity, 1) * 100;
 
   const canvas = document.getElementById('intensityCanvas');
