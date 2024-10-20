@@ -24,6 +24,9 @@ body {
   display: flex;
   justify-content: center;
 }
+.row {
+  max-width: 100%;
+}
 
 .titulo {
   color: #3AB0A6;
