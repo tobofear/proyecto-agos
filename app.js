@@ -1,3 +1,32 @@
+document.addEventListener('DOMContentLoaded', () => {
+  const edadInput = document.getElementById('edad');
+  const nextButton = document.getElementById('nextButton');
+  const label = document.querySelector('.label');
+  const intensityContainer = document.querySelector('.intensity-container');
+  const fileSelectContainer = document.querySelector('.file-select'); // Contenedor de Medir Glucosa
+
+  // Ocultar el contenedor de intensidad y el botón de Medir Glucosa inicialmente
+  intensityContainer.style.display = 'none';
+  fileSelectContainer.style.display = 'none';
+
+  nextButton.addEventListener('click', () => {
+    const edad = edadInput.value;
+
+    // Verificar si la edad es un número y mayor que 0
+    if (!isNaN(edad) && edad > 0) {
+      intensityContainer.style.display = 'block'; // Habilitar el contenedor de intensidad
+      fileSelectContainer.style.display = 'block'; // Mostrar el botón de Medir Glucosa
+
+      // Ocultar el input de edad y el botón de Siguiente
+      label.style.display = 'none';
+      edadInput.style.display = 'none';
+      nextButton.style.display = 'none';
+    } else {
+      alert('Por favor, ingrese una edad válida.'); // Alerta si la edad no es válida
+    }
+  });
+});
+
 function onOpenCvReady() {
   console.log('OpenCV.js loaded');
   document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
@@ -91,7 +120,16 @@ window.onload = function () {
 };
 
 function updateIntensityCircle(intensity) {
-  const maxIntensity = 600;
+  const edadInput = document.getElementById('edad');
+  let maxIntensity;
+  if (edadInput.value <= 6) {
+    maxIntensity = 5000;
+  } else if (edadInput.value > 6 && edadInput.value <= 12) {
+    maxIntensity = 900;
+  } else {
+    maxIntensity = 600;
+  }
+  console.log(maxIntensity)
   const percentage = Math.min(intensity / maxIntensity, 1) * 100;
 
   const canvas = document.getElementById('intensityCanvas');
