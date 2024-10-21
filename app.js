@@ -3,27 +3,36 @@ function onOpenCvReady() {
   document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
 }
 
-function handleFileSelect(event) {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-
-  reader.onload = function (event) {
-    const img = new Image();
-    img.onload = function () {
-      processImage(this);
-    };
-    img.src = event.target.result;
-  };
-
-  reader.readAsDataURL(file);
-}
-
 function processImage(image) {
   const canvas = document.getElementById('outputCanvas');
   const ctx = canvas.getContext('2d');
-  canvas.width = image.width;
-  canvas.height = image.height;
-  ctx.drawImage(image, 0, 0);
+  // Definir un tamaño máximo para el canvas
+  const maxWidth = 300; // Ancho máximo deseado
+  const maxHeight = 300; // Alto máximo deseado
+
+  // Calcular la relación de aspecto de la imagen
+  const aspectRatio = image.width / image.height;
+
+  // Calcular el nuevo tamaño basado en la relación de aspecto
+  let newWidth, newHeight;
+  if (image.width > image.height) {
+    newWidth = Math.min(maxWidth, image.width);
+    newHeight = newWidth / aspectRatio;
+  } else {
+    newHeight = Math.min(maxHeight, image.height);
+    newWidth = newHeight * aspectRatio;
+  }
+
+  // Establecer el tamaño del canvas
+  canvas.width = maxWidth;
+  canvas.height = maxHeight;
+
+  // Calcular las posiciones para centrar la imagen en el canvas
+  const xOffset = (maxWidth - newWidth) / 2;
+  const yOffset = (maxHeight - newHeight) / 2;
+
+  // Dibujar la imagen escalada y centrada en el canvas
+  ctx.drawImage(image, xOffset, yOffset, newWidth, newHeight);
 
   // Convertir la imagen a un objeto Mat de OpenCV.js
   const src = cv.imread(canvas);
@@ -81,27 +90,8 @@ window.onload = function () {
   drawEmptyCircle(); // Dibuja el círculo vacío al cargar
 };
 
-// Modificar handleFileSelect para manejar la lógica de cargar imágenes
-function handleFileSelect(event) {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-
-  reader.onload = function (event) {
-    const img = new Image();
-    img.onload = function () {
-      processImage(this);
-      document.getElementById('boton-file').classList.add('d-none'); // Ocultar el botón de subir archivo
-      document.getElementById('backButton').classList.remove('d-none'); // Mostrar el botón de Back
-    };
-    img.src = event.target.result;
-  };
-
-  reader.readAsDataURL(file);
-}
-
-
 function updateIntensityCircle(intensity) {
-  const maxIntensity = 4258;
+  const maxIntensity = 600;
   const percentage = Math.min(intensity / maxIntensity, 1) * 100;
 
   const canvas = document.getElementById('intensityCanvas');

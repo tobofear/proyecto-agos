@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eliminación de Fondo y Detección de Contornos</title>
+  <script src="https://docs.opencv.org/4.x/opencv.js" async></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    input[type="file"] {
+      margin-bottom: 20px;
+    }
+
+    canvas {
+      border: 1px solid #000;
+      max-width: 600px;
+      max-height: 500px;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="file" id="imageUpload" accept="image/*" />
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const imageUpload = document.getElementById('imageUpload');
+
+    imageUpload.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          removeBackgroundAndDetectContours();
+        };
+      }
+    });
+
+    function removeBackgroundAndDetectContours() {
+      // Cargar la imagen en OpenCV
+      let src = cv.imread(canvas);
+      let gray = new cv.Mat();
+      let blurred = new cv.Mat();
+      let binary = new cv.Mat();
+      let contours = new cv.MatVector();
+      let hierarchy = new cv.Mat();
+
+      // Convertir a escala de grises
+      cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+
+      // Aplicar desenfoque para suavizar la imagen
+      cv.GaussianBlur(gray, blurred, new cv.Size(5, 5), 0);
+
+      // Aplicar umbralización para eliminar el fondo
+
+      cv.threshold(blurred, binary, 150, 255, cv.THRESH_BINARY_INV);
+      // Encontrar contornos en la imagen binaria
+      cv.findContours(binary, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+      // Dibujar los contornos detectados en la imagen original
+      for (let i = 0; i < contours.size(); i++) {
+        let color = new cv.Scalar(0, 255, 0);
+        cv.drawContours(src, contours, i, color, 2, cv.LINE_8, hierarchy, 0);
+      }
+
+      // Mostrar la imagen con los contornos detectados en el canvas
+      cv.imshow('canvas', src);
+      // Liberar memoria
+      src.delete();
+      gray.delete();
+      blurred.delete();
+      binary.delete();
+      contours.delete();
+      hierarchy.delete();
+    }
+  </script>
+</body>
+
+</html>
