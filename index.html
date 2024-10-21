@@ -5,24 +5,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Deteccion de Glucosa</title>
+  <link rel="shortcut icon" href="./assets/logo.jpg" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="./style.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
 </head>
 
 <body>
+  <header>
+    <nav class="navbar navbar-expand-sm navbar-dark fixed-top">
+      <div class="container-fluid">
+        <h1 class="titulo navbar-brand mb-0 h1">Niveles de glucosa</h1>
+      </div>
+    </nav>
+  </header>
   <!-- <input type="file" class="fileInput" id="fileInput" accept="image/*">
   <canvas class="outputCanvas" id="outputCanvas" width="400" height="300"></canvas>
   <div class="colorIntensity" id="colorIntensity"></div> -->
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <div class="row">
-    <h1 class="titulo">Detector de niveles de glucosa</h1>
     <div id="app" class="container">
       <div class="hijo">
         <canvas id="outputCanvas" class="d-none"></canvas>
         <div id="colorIntensity" class="d-none"></div>
         <div class="intensity-container">
-          <canvas id="intensityCanvas"></canvas>
+          <canvas id="intensityCanvas" width="200" height="200"></canvas>
           <div id="statusText" class="intensity-container"></div>
         </div>
         <div class="file-select">

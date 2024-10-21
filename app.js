@@ -34,11 +34,13 @@ function processImage(image) {
   cv.cvtColor(hsv, hsv, cv.COLOR_RGB2HSV);
 
   // Definir el rango de color azul en HSV
-  const lowerBlue = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [90, 50, 50, 0]);//Hue(matriz, cant de componentes),Saturacion,Valor, transparencia
-  const upperBlue = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [130, 255, 255, 255]);//totalmente opaco 255 en traparencia
+  const lowerBlue = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [90, 50, 50, 0]);
+  const upperBlue = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [130, 255, 255, 255]);
+
   // Rango para colores verdes
   const lowerGreen = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [35, 50, 50, 0]);
   const upperGreen = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [85, 255, 255, 255]);
+
   // Crear máscaras para verdes y azules
   let maskGreen = new cv.Mat();
   let maskBlue = new cv.Mat();
@@ -74,42 +76,99 @@ function processImage(image) {
   dst.delete();
 }
 
+// Llama a esta función cuando la página se cargue
+window.onload = function () {
+  drawEmptyCircle(); // Dibuja el círculo vacío al cargar
+};
+
+// Modificar handleFileSelect para manejar la lógica de cargar imágenes
+function handleFileSelect(event) {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function (event) {
+    const img = new Image();
+    img.onload = function () {
+      processImage(this);
+      document.getElementById('boton-file').classList.add('d-none'); // Ocultar el botón de subir archivo
+      document.getElementById('backButton').classList.remove('d-none'); // Mostrar el botón de Back
+    };
+    img.src = event.target.result;
+  };
+
+  reader.readAsDataURL(file);
+}
+
+
 function updateIntensityCircle(intensity) {
   const maxIntensity = 4258;
   const percentage = Math.min(intensity / maxIntensity, 1) * 100;
 
   const canvas = document.getElementById('intensityCanvas');
   const ctx = canvas.getContext('2d');
+
+  // Establecer el tamaño del canvas
+  canvas.width = 200; // Ancho del canvas
+  canvas.height = 200; // Alto del canvas
+
   const centerX = canvas.width / 2;
   const centerY = canvas.height / 2;
-  const radius = 70;
-  const startAngle = -0.5 * Math.PI; // Empezar en la parte superior
+  const radius = 90; // Radio del círculo
+  const startAngle = -0.5 * Math.PI; // Comenzar en la parte superior
   const endAngle = startAngle + (2 * Math.PI * (percentage / 100));
-
-  // Determinar el color y el texto en función del porcentaje
-  let color;
-  let text;
-  if (percentage <= 30) {
-    color = 'orange';
-    text = 'Glucosa Baja';
-  } else if (percentage <= 60) {
-    color = 'green';
-    text = 'Normal';
-  } else {
-    color = 'red';
-    text = 'Glucosa Alta';
-  }
 
   // Limpiar el canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Dibujar el fondo del círculo
+  // Dibujar el anillo exterior que representa las zonas de bajo, normal y alto
+  const outerRadius = radius - 20; // Radio exterior
+  const innerRadius = radius - 10;  // Radio interior
+
+  // Dibujar la zona "Bajo"
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, outerRadius, startAngle, startAngle + (2 * Math.PI * 0.3));
+  ctx.arc(centerX, centerY, innerRadius, startAngle + (2 * Math.PI * 0.3), startAngle, true);
+  ctx.closePath();
+  ctx.fillStyle = '#f27f1b';
+  ctx.fill();
+
+  // Dibujar la zona "Normal"
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, outerRadius, startAngle + (2 * Math.PI * 0.3), startAngle + (2 * Math.PI * 0.6));
+  ctx.arc(centerX, centerY, innerRadius, startAngle + (2 * Math.PI * 0.6), startAngle + (2 * Math.PI * 0.3), true);
+  ctx.closePath();
+  ctx.fillStyle = '#1bf222';
+  ctx.fill();
+
+  // Dibujar la zona "Alto"
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, outerRadius, startAngle + (2 * Math.PI * 0.6), startAngle + (2 * Math.PI));
+  ctx.arc(centerX, centerY, innerRadius, startAngle + (2 * Math.PI), startAngle + (2 * Math.PI * 0.6), true);
+  ctx.closePath();
+  ctx.fillStyle = '#f21b1b';
+  ctx.fill();
+
+  // Dibujar el fondo del círculo de progreso
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
   ctx.strokeStyle = '#E0E0E0'; // Color gris para el fondo del círculo
   ctx.lineWidth = 10;
   ctx.stroke();
+
   // Dibujar el círculo de progreso con el color determinado
+  let color;
+  let text;
+  if (percentage <= 30) {
+    color = '#82c6ed';
+    text = 'Glucosa Baja';
+  } else if (percentage <= 60) {
+    color = '#55b8f2';
+    text = 'Normal';
+  } else {
+    color = '#1f75a6';
+    text = 'Glucosa Alta';
+  }
+
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, startAngle, endAngle);
   ctx.strokeStyle = color;
@@ -117,7 +176,7 @@ function updateIntensityCircle(intensity) {
   ctx.stroke();
 
   // Mostrar la intensidad en el centro
-  ctx.font = '18px Arial';
+  ctx.font = '22px Arial';
   ctx.fillStyle = color;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -127,41 +186,71 @@ function updateIntensityCircle(intensity) {
   const statusText = document.getElementById('statusText');
   statusText.textContent = text;
   statusText.style.color = color;
+  statusText.style.fontSize = '20px'; // Aumentar el tamaño de la letra
+  // statusText.style.fontWeight = 'bold'; // Hacer la letra en negrita
 
   // Ajustar el tamaño del contenedor
   const appContainer = document.getElementById('app');
   appContainer.classList.add('expanded'); // Agregar clase para agrandar el contenedor
 }
 
-function drawEmptyCircle() {
+function drawCircle(intensity) {
   const canvas = document.getElementById('intensityCanvas');
   const ctx = canvas.getContext('2d');
   const centerX = canvas.width / 2;
   const centerY = canvas.height / 2;
-  const radius = 70;
+  const radius = 90; // Radio del círculo
+  const outerRadius = radius - 20; // Radio exterior
+  const innerRadius = radius - 10;  // Radio interior
 
   // Limpiar el canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Dibujar el borde del círculo vacío
+  // Definimos el ángulo inicial
+  const startAngle = -0.5 * Math.PI; // Comenzar en la parte superior
+
+  // Dibujar la zona "Bajo"
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, outerRadius, startAngle, startAngle + (2 * Math.PI * 0.3));
+  ctx.arc(centerX, centerY, innerRadius, startAngle + (2 * Math.PI * 0.3), startAngle, true);
+  ctx.closePath();
+  ctx.fillStyle = '#f2a31b'; // Color para la zona bajo (azul claro)
+  ctx.fill();
+
+  // Dibujar la zona "Normal"
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, outerRadius, startAngle + (2 * Math.PI * 0.3), startAngle + (2 * Math.PI * 0.6));
+  ctx.arc(centerX, centerY, innerRadius, startAngle + (2 * Math.PI * 0.6), startAngle + (2 * Math.PI * 0.3), true);
+  ctx.closePath();
+  ctx.fillStyle = '#63f79e'; // Color para la zona normal (amarillo)
+  ctx.fill();
+
+  // Dibujar la zona "Alto"
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, outerRadius, startAngle + (2 * Math.PI * 0.6), startAngle + (2 * Math.PI));
+  ctx.arc(centerX, centerY, innerRadius, startAngle + (2 * Math.PI), startAngle + (2 * Math.PI * 0.6), true);
+  ctx.closePath();
+  ctx.fillStyle = '#f25555'; // Color para la zona alto (rojo)
+  ctx.fill();
+  // Dibujar el fondo del círculo de progreso
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-  ctx.strokeStyle = '#E0E0E0'; // Color gris para el círculo vacío
+  ctx.strokeStyle = '#E0E0E0'; // Color gris para el fondo del círculo
   ctx.lineWidth = 10;
   ctx.stroke();
 
-  // Mostrar 0 mg/dl en el centro
-  ctx.font = '18px Arial';
-  ctx.fillStyle = 'black';
+
+  // Añadir el texto de intensidad en el centro
+  ctx.font = '22px Arial';
+  ctx.fillStyle = '#3AB0A6'; // Color del texto
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('0 mg/dl', centerX, centerY);
+  ctx.fillText(intensity + ' mg/dl', centerX, centerY);
 }
 
-
-// Llama a esta función cuando la página se cargue
+// Llama a drawCircle con un valor de intensidad al cargar
 window.onload = function () {
-  drawEmptyCircle();
+  drawCircle(0); // Dibuja el círculo vacío al cargar
 };
 
 function handleFileSelect(event) {

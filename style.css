@@ -23,15 +23,24 @@ body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: center;
+  align-items: center;
+  margin-top: 40px;
 }
 
 .row {
   max-width: 100%;
 }
 
+.navbar {
+  background: linear-gradient(180deg, #E0F7FA 0%, #ffffff 100%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  margin: 0;
+}
+
 .titulo {
   color: #3AB0A6;
-  font-size: 26px;
+  font-size: 20px;
   margin: 0;
   font-weight: bold;
   text-align: center;
@@ -103,6 +112,18 @@ input[type="file"]::file-selector-button:hover {
   margin-top: 20px;
 }
 
+#intensityCanvas {
+  width: 200px;
+  /* Ajusta según tus necesidades */
+  height: 200px;
+  /* Ajusta según tus necesidades */
+  display: block;
+  /* Para centrar */
+  margin: auto;
+  /* Para centrar horizontalmente */
+}
+
+
 .button-container {
   margin-top: 20px;
 }
@@ -114,4 +135,10 @@ input[type="file"]::file-selector-button:hover {
 
 .d-none {
   display: none;
+}
+
+@media (min-width: 728px) {
+  .container {
+    margin-top: 65px;
+  }
 }
