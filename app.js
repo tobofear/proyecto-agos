@@ -1,29 +1,67 @@
+document.addEventListener('DOMContentLoaded', () => {
+  const edadInput = document.getElementById('edad');
+  const nextButton = document.getElementById('nextButton');
+  const label = document.querySelector('.label');
+  const intensityContainer = document.querySelector('.intensity-container');
+  const fileSelectContainer = document.querySelector('.file-select'); // Contenedor de Medir Glucosa
+
+  // Ocultar el contenedor de intensidad y el botón de Medir Glucosa inicialmente
+  intensityContainer.style.display = 'none';
+  fileSelectContainer.style.display = 'none';
+
+  nextButton.addEventListener('click', () => {
+    const edad = edadInput.value;
+
+    // Verificar si la edad es un número y mayor que 0
+    if (!isNaN(edad) && edad > 0) {
+      intensityContainer.style.display = 'block'; // Habilitar el contenedor de intensidad
+      fileSelectContainer.style.display = 'block'; // Mostrar el botón de Medir Glucosa
+
+      // Ocultar el input de edad y el botón de Siguiente
+      label.style.display = 'none';
+      edadInput.style.display = 'none';
+      nextButton.style.display = 'none';
+    } else {
+      alert('Por favor, ingrese una edad válida.'); // Alerta si la edad no es válida
+    }
+  });
+});
+
 function onOpenCvReady() {
   console.log('OpenCV.js loaded');
   document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
 }
 
-function handleFileSelect(event) {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-
-  reader.onload = function (event) {
-    const img = new Image();
-    img.onload = function () {
-      processImage(this);
-    };
-    img.src = event.target.result;
-  };
-
-  reader.readAsDataURL(file);
-}
-
 function processImage(image) {
   const canvas = document.getElementById('outputCanvas');
   const ctx = canvas.getContext('2d');
-  canvas.width = image.width;
-  canvas.height = image.height;
-  ctx.drawImage(image, 0, 0);
+  // Definir un tamaño máximo para el canvas
+  const maxWidth = 300; // Ancho máximo deseado
+  const maxHeight = 300; // Alto máximo deseado
+
+  // Calcular la relación de aspecto de la imagen
+  const aspectRatio = image.width / image.height;
+
+  // Calcular el nuevo tamaño basado en la relación de aspecto
+  let newWidth, newHeight;
+  if (image.width > image.height) {
+    newWidth = Math.min(maxWidth, image.width);
+    newHeight = newWidth / aspectRatio;
+  } else {
+    newHeight = Math.min(maxHeight, image.height);
+    newWidth = newHeight * aspectRatio;
+  }
+
+  // Establecer el tamaño del canvas
+  canvas.width = maxWidth;
+  canvas.height = maxHeight;
+
+  // Calcular las posiciones para centrar la imagen en el canvas
+  const xOffset = (maxWidth - newWidth) / 2;
+  const yOffset = (maxHeight - newHeight) / 2;
+
+  // Dibujar la imagen escalada y centrada en el canvas
+  ctx.drawImage(image, xOffset, yOffset, newWidth, newHeight);
 
   // Convertir la imagen a un objeto Mat de OpenCV.js
   const src = cv.imread(canvas);
@@ -81,27 +119,17 @@ window.onload = function () {
   drawEmptyCircle(); // Dibuja el círculo vacío al cargar
 };
 
-// Modificar handleFileSelect para manejar la lógica de cargar imágenes
-function handleFileSelect(event) {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-
-  reader.onload = function (event) {
-    const img = new Image();
-    img.onload = function () {
-      processImage(this);
-      document.getElementById('boton-file').classList.add('d-none'); // Ocultar el botón de subir archivo
-      document.getElementById('backButton').classList.remove('d-none'); // Mostrar el botón de Back
-    };
-    img.src = event.target.result;
-  };
-
-  reader.readAsDataURL(file);
-}
-
-
 function updateIntensityCircle(intensity) {
-  const maxIntensity = 4258;
+  const edadInput = document.getElementById('edad');
+  let maxIntensity;
+  if (edadInput.value <= 6) {
+    maxIntensity = 5000;
+  } else if (edadInput.value > 6 && edadInput.value <= 12) {
+    maxIntensity = 900;
+  } else {
+    maxIntensity = 600;
+  }
+  console.log(maxIntensity)
   const percentage = Math.min(intensity / maxIntensity, 1) * 100;
 
   const canvas = document.getElementById('intensityCanvas');
