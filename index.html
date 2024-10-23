@@ -43,8 +43,12 @@
   <div class="row">
     <div id="app" class="container">
       <div class="hijo">
-        <label for="edad" class="label">Ingrese su edad</label>
-        <input type="text" id="edad" class="edad">
+        <label for="choice" class="label">Eres diabético?</label>
+        <select id="choice" name="choice" class="choice">
+          <option value="">Seleccionar</option>
+          <option value="yes" class="choice">Sí</option>
+          <option value="no" class="choice">No</option>
+        </select>
         <button id="nextButton" class="btn-edad">Siguiente</button>
         <canvas id="outputCanvas" class="d-none"></canvas>
         <div id="colorIntensity" class="d-none"></div>

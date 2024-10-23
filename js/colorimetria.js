@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (element.tagName === 'IMG') {
         // Si es una imagen, la añadimos al PDF
         const imgData = element.src;
-        pdf.addImage(imgData, 'JPEG', 10, yPosition, 50, 30);
+        pdf.addImage(imgData, 'JPEG', 10, yPosition, 30, 30);
         yPosition += 35; // Ajustar la posición después de la imagen
       }
 
