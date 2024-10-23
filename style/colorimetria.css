@@ -36,9 +36,7 @@ body {
   /* Padding aumentado para mejor espacio interno */
   text-align: center;
   width: 80vw;
-  max-height: 80vh;
   /* Permitir más espacio para el contenido */
-  overflow-y: auto;
   /* Permitir desplazamiento vertical */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   margin: 20px 0;
