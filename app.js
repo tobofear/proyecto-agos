@@ -1,28 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const edadInput = document.getElementById('edad');
+  const diabeticoSelect = document.getElementById('choice');
   const nextButton = document.getElementById('nextButton');
   const label = document.querySelector('.label');
   const intensityContainer = document.querySelector('.intensity-container');
-  const fileSelectContainer = document.querySelector('.file-select'); // Contenedor de Medir Glucosa
+  const fileSelectContainer = document.querySelector('.file-select');
 
   // Ocultar el contenedor de intensidad y el botón de Medir Glucosa inicialmente
   intensityContainer.style.display = 'none';
   fileSelectContainer.style.display = 'none';
 
   nextButton.addEventListener('click', () => {
-    const edad = edadInput.value;
+    const diabetico = diabeticoSelect.value;
 
-    // Verificar si la edad es un número y mayor que 0
-    if (!isNaN(edad) && edad > 0) {
-      intensityContainer.style.display = 'block'; // Habilitar el contenedor de intensidad
+    // Verificar si es diabético o no
+    if (diabetico === 'yes' || diabetico === 'no') {
+      intensityContainer.style.display = 'block'; // Mostrar el contenedor de intensidad
       fileSelectContainer.style.display = 'block'; // Mostrar el botón de Medir Glucosa
 
-      // Ocultar el input de edad y el botón de Siguiente
+      // Ocultar el select y el botón de Siguiente
       label.style.display = 'none';
-      edadInput.style.display = 'none';
+      diabeticoSelect.style.display = 'none';
       nextButton.style.display = 'none';
     } else {
-      alert('Por favor, ingrese una edad válida.'); // Alerta si la edad no es válida
+      alert('Por favor, seleccione una opción válida.'); // Alerta si no se ha seleccionado una opción
     }
   });
 });
@@ -120,14 +120,12 @@ window.onload = function () {
 };
 
 function updateIntensityCircle(intensity) {
-  const edadInput = document.getElementById('edad');
+  const diabInput = document.getElementById('choice');
   let maxIntensity;
-  if (edadInput.value <= 6) {
-    maxIntensity = 5000;
-  } else if (edadInput.value > 6 && edadInput.value <= 12) {
-    maxIntensity = 900;
+  if (diabInput.value === 'yes') {
+    maxIntensity = 5000; // 80-130mg/dl (normal), <180mg/dl (2h despues de comer) 
   } else {
-    maxIntensity = 600;
+    maxIntensity = 900;//70-100mg/dl, <140mg/dl (2h despues de comer) , los dos llegan a 180 pero los porcentajes cambian
   }
   console.log(maxIntensity)
   const percentage = Math.min(intensity / maxIntensity, 1) * 100;
