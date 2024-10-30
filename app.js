@@ -102,7 +102,7 @@ function processImage(image) {
   cv.imshow(canvas, dst);
 
   // Actualizar la rueda de intensidad
-  updateIntensityCircle(glucosa);
+  updateIntensityCircle(glucose);
 
   // Liberar memoria
   src.delete();
