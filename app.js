@@ -124,9 +124,9 @@ function updateIntensityCircle(intensity) {
   const diabInput = document.getElementById('choice');
   let maxIntensity;
   if (diabInput.value === 'yes') {
-    maxIntensity = 5000; // 80-130mg/dl (normal), <180mg/dl (2h despues de comer) 
+    maxIntensity = 180; // 80-130mg/dl (normal), <180mg/dl (2h despues de comer) 
   } else {
-    maxIntensity = 900;//70-100mg/dl, <140mg/dl (2h despues de comer) , los dos llegan a 180 pero los porcentajes cambian
+    maxIntensity = 140;//70-100mg/dl, <140mg/dl (2h despues de comer) , los dos llegan a 180 pero los porcentajes cambian
   }
   console.log(maxIntensity)
   const percentage = Math.min(intensity / maxIntensity, 1) * 100;
