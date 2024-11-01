@@ -94,14 +94,15 @@ function processImage(image) {
   cv.threshold(mask, dst, 100, 255, cv.THRESH_BINARY);
 
   // Calcular la intensidad del color
-  const intensity = cv.countNonZero(dst);
-  document.getElementById("colorIntensity").textContent = intensity + ' mg/dl';
+  let intensity = Number(cv.countNonZero(dst));
+  let glucosa = Math.trunc(intensity * 0.501 - 63.6);
+  document.getElementById("colorIntensity").textContent = glucosa + ' mg/dl';
 
   // Mostrar el resultado en el canvas
   cv.imshow(canvas, dst);
 
   // Actualizar la rueda de intensidad
-  updateIntensityCircle(intensity);
+  updateIntensityCircle(glucosa);
 
   // Liberar memoria
   src.delete();
