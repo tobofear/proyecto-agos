@@ -95,7 +95,7 @@ function processImage(image) {
 
   // Calcular la intensidad del color
   let intensity = Number(cv.countNonZero(dst));
-  let glucosa = Math.trunc(intensity * 0.501 - 63.6);
+  let glucosa = Math.trunc(intensity * 0.509 - 59.1);
   document.getElementById("colorIntensity").textContent = glucosa + ' mg/dl';
 
   // Mostrar el resultado en el canvas
