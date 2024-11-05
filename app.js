@@ -153,24 +153,24 @@ function updateIntensityCircle(intensity) {
 
   // Dibujar la zona "Bajo"
   ctx.beginPath();
-  ctx.arc(centerX, centerY, outerRadius, startAngle, startAngle + (2 * Math.PI * 0.3));
-  ctx.arc(centerX, centerY, innerRadius, startAngle + (2 * Math.PI * 0.3), startAngle, true);
+  ctx.arc(centerX, centerY, outerRadius, startAngle, startAngle + (2 * Math.PI * 0.5));
+  ctx.arc(centerX, centerY, innerRadius, startAngle + (2 * Math.PI * 0.5), startAngle, true);
   ctx.closePath();
   ctx.fillStyle = '#f27f1b';
   ctx.fill();
 
   // Dibujar la zona "Normal"
   ctx.beginPath();
-  ctx.arc(centerX, centerY, outerRadius, startAngle + (2 * Math.PI * 0.3), startAngle + (2 * Math.PI * 0.6));
-  ctx.arc(centerX, centerY, innerRadius, startAngle + (2 * Math.PI * 0.6), startAngle + (2 * Math.PI * 0.3), true);
+  ctx.arc(centerX, centerY, outerRadius, startAngle + (2 * Math.PI * 0.5), startAngle + (2 * Math.PI * 0.72));
+  ctx.arc(centerX, centerY, innerRadius, startAngle + (2 * Math.PI * 0.72), startAngle + (2 * Math.PI * 0.5), true);
   ctx.closePath();
   ctx.fillStyle = '#1bf222';
   ctx.fill();
 
   // Dibujar la zona "Alto"
   ctx.beginPath();
-  ctx.arc(centerX, centerY, outerRadius, startAngle + (2 * Math.PI * 0.6), startAngle + (2 * Math.PI));
-  ctx.arc(centerX, centerY, innerRadius, startAngle + (2 * Math.PI), startAngle + (2 * Math.PI * 0.6), true);
+  ctx.arc(centerX, centerY, outerRadius, startAngle + (2 * Math.PI * 0.72), startAngle + (2 * Math.PI));
+  ctx.arc(centerX, centerY, innerRadius, startAngle + (2 * Math.PI), startAngle + (2 * Math.PI * 0.72), true);
   ctx.closePath();
   ctx.fillStyle = '#f21b1b';
   ctx.fill();
@@ -185,10 +185,10 @@ function updateIntensityCircle(intensity) {
   // Dibujar el círculo de progreso con el color determinado
   let color;
   let text;
-  if (percentage <= 30) {
+  if (percentage <= 50) {
     color = '#82c6ed';
     text = 'Glucosa Baja';
-  } else if (percentage <= 60) {
+  } else if (percentage <= 72) {
     color = '#55b8f2';
     text = 'Normal';
   } else {
